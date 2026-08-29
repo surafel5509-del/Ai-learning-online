@@ -1,0 +1,25 @@
+# GPU-enabled backend image for training workers with CUDA support
+FROM pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential libpq-dev curl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+# torch already present in base image; install the rest
+RUN pip install --no-deps -r requirements.txt || pip install -r requirements.txt
+
+COPY packages ./packages
+COPY services ./services
+COPY apps/api ./apps/api
+COPY training ./training
+
+ENV PYTHONPATH=/app
+
+CMD ["python", "-m", "apps.api.worker"]

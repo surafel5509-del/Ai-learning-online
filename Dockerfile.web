@@ -1,0 +1,18 @@
+# Frontend build image: Node + Vite, builds the React SPA and serves static files
+FROM node:20-slim AS build
+
+WORKDIR /app
+COPY apps/web/package.json apps/web/package-lock.json* ./
+RUN npm install
+COPY apps/web ./
+RUN npm run build
+
+# The built dist is copied into the API image's static mount at runtime.
+# This stage is also used by the dev server.
+FROM node:20-slim
+WORKDIR /app
+COPY --from=build /app/dist ./dist
+COPY apps/web/package.json ./
+RUN npm install --omit=dev
+EXPOSE 5173
+CMD ["npx", "vite", "preview", "--host", "0.0.0.0", "--port", "5173"]
