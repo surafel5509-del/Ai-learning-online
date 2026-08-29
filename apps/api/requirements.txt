@@ -1,0 +1,14 @@
+# Core backend dependencies for the AI platform.
+# Install: pip install -r apps/api/requirements.txt
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+sqlalchemy==2.0.36
+pydantic==2.10.4
+pydantic-settings==2.7.0
+python-multipart==0.0.20
+psutil==6.1.1
+numpy==2.2.1
+# Optional production extras (not required for dev):
+# psycopg[binary]==3.2.3   # PostgreSQL driver
+# passlib[bcrypt]==1.7.4   # stronger password hashing (PBKDF2 fallback otherwise)
+# pgvector==0.3.6          # pgvector support (cosine fallback used otherwise)
